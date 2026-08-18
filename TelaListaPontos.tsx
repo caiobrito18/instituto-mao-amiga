@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 export type Ponto = {
@@ -10,6 +10,7 @@ export type Ponto = {
 };
 
 export const pontosMock: Ponto[] = [
+
   {
     id: '1',
     nome: 'Ponto Centro — Igreja São José',
@@ -34,6 +35,46 @@ export const pontosMock: Ponto[] = [
     recebeDistribui:
       'Recebe doações de famílias e mercados; distribui refeições prontas no mesmo dia.',
   },
+  {
+    id: '4',
+    nome: 'Ponto Leste — Centro Comunitário Esperança',
+    endereco: 'Rua das Oliveiras, 334 — Jardim Esperança',
+    diasHorarios: 'Segunda, quarta e sexta, 10h–16h',
+    recebeDistribui:
+      'Recebe roupas de frio e cobertores; distribui sopão nas noites de quarta.',
+  },
+  {
+    id: '5',
+    nome: 'Ponto Oeste — ONG Vida Nova',
+    endereco: 'Av. da Paz, 1050 — Parque Industrial',
+    diasHorarios: 'Segunda a sábado, 8h–18h',
+    recebeDistribui:
+      'Recebe leite, fraldas e itens para bebês; distribui kits maternidade às sextas-feiras.',
+  },
+  {
+    id: '6',
+    nome: 'Ponto Noroeste — Escola Estadual Cidadã',
+    endereco: 'Rua do Saber, 200 — Bairro Universitário',
+    diasHorarios: 'Segunda e quarta, 18h–21h',
+    recebeDistribui:
+      'Recebe material escolar e livros; distribui kits de estudo para jovens da comunidade.',
+  },
+  {
+    id: '7',
+    nome: 'Ponto Sudeste — Paróquia Cristo Redentor',
+    endereco: 'Praça da Fé, S/N — Jardim das Palmeiras',
+    diasHorarios: 'Domingo, 8h–13h',
+    recebeDistribui:
+      'Recebe doações financeiras e produtos de limpeza; distribui pão e café da manhã aos domingos.',
+  },
+  {
+    id: '8',
+    nome: 'Ponto Sudoeste — Galpão Solidário',
+    endereco: 'Rua dos Imigrantes, 400 — Setor Comercial',
+    diasHorarios: 'Quinta a sábado, 14h–20h',
+    recebeDistribui:
+      'Recebe brinquedos e roupas infantis; promove brechó solidário e distribui lanches para crianças.',
+  }
 ];
 
 type RootStackParamList = {
@@ -64,13 +105,17 @@ export default function TelaListaPontos({ navigation }: Props) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.titulo}>Pontos de coleta / distribuição</Text>
-      {pontosMock.map((ponto) => (
-        <PontoItem
-          key={ponto.id}
-          ponto={ponto}
-          onPress={() => navigation.navigate('Detalhe', { pontoId: ponto.id })}
-        />
-      ))}
+      <FlatList
+        data={pontosMock}
+        keyExtractor={ item => item.id.toString()}
+        renderItem={({item})=>
+          <PontoItem
+          ponto={item}
+          onPress={() => navigation.navigate('Detalhe', { pontoId: item.id })}
+          />
+        }
+      />
+
     </ScrollView>
   );
 }
@@ -82,8 +127,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   titulo: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 24,
+    fontWeight: 600,
     color: '#1B3A5C',
     marginBottom: 16,
   },
