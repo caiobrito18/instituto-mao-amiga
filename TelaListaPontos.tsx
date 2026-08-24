@@ -10,70 +10,75 @@ export type Ponto = {
 };
 
 export const pontosMock: Ponto[] = [
-
   {
     id: '1',
-    nome: 'Ponto Centro — Igreja São José',
-    endereco: 'Rua das Flores, 120 — Centro',
-    diasHorarios: 'Segunda a sexta, 9h–17h',
-    recebeDistribui:
-      'Recebe alimentos não perecíveis e roupas; distribui cestas básicas às terças.',
+    nome: 'Casa da Acolhida Bem-Te-Vi',
+    endereco: 'Rua das Andorinhas, 15 — Jardim Primavera',
+    diasHorarios: 'Terça e sexta, 8h–16h',
+    recebeDistribui: 'Arrecada ração e medicamentos veterinários; distribui para cuidadores de animais resgatados.'
   },
   {
     id: '2',
-    nome: 'Ponto Norte — Associação Bairro Alto',
-    endereco: 'Av. Brasil, 890 — Bairro Alto',
-    diasHorarios: 'Terça e quinta, 14h–19h',
-    recebeDistribui:
-      'Recebe hortifruti de feiras; distribui kits de higiene aos sábados.',
+    nome: 'Espaço Cultural Raízes',
+    endereco: 'Ladeira das Pedras, 302 — Centro Histórico',
+    diasHorarios: 'Quarta a domingo, 14h–20h',
+    recebeDistribui: 'Recebe instrumentos musicais e livros de arte; oferece oficinas gratuitas nos finais de semana.'
   },
   {
     id: '3',
-    nome: 'Ponto Sul — Mercado Comunitário',
-    endereco: 'Travessa do Sol, 45 — Vila Nova',
-    diasHorarios: 'Sábado, 8h–12h',
-    recebeDistribui:
-      'Recebe doações de famílias e mercados; distribui refeições prontas no mesmo dia.',
+    nome: 'Associação de Moradores Nova Esperança',
+    endereco: 'Rua do Bosque, 88 — Vila Verde',
+    diasHorarios: 'Segunda e quinta, 9h–12h',
+    recebeDistribui: 'Aceita doações de móveis e eletrodomésticos; repassa para famílias recém-alocadas no bairro.'
   },
   {
     id: '4',
-    nome: 'Ponto Leste — Centro Comunitário Esperança',
-    endereco: 'Rua das Oliveiras, 334 — Jardim Esperança',
-    diasHorarios: 'Segunda, quarta e sexta, 10h–16h',
-    recebeDistribui:
-      'Recebe roupas de frio e cobertores; distribui sopão nas noites de quarta.',
+    nome: 'Centro de Apoio Girassol',
+    endereco: 'Avenida das Nações, 1500 — Bairro das Indústrias',
+    diasHorarios: 'Segunda a quarta, 13h–17h',
+    recebeDistribui: 'Recebe retalhos, linhas e agulhas; distribui artesanato feito por mães da comunidade para venda.'
   },
   {
     id: '5',
-    nome: 'Ponto Oeste — ONG Vida Nova',
-    endereco: 'Av. da Paz, 1050 — Parque Industrial',
-    diasHorarios: 'Segunda a sábado, 8h–18h',
-    recebeDistribui:
-      'Recebe leite, fraldas e itens para bebês; distribui kits maternidade às sextas-feiras.',
+    nome: 'Núcleo de Saúde Solidária',
+    endereco: 'Praça da Matriz, 12 — Setor Central',
+    diasHorarios: 'Todos os dias, 7h–19h',
+    recebeDistribui: 'Arrecada cadeiras de rodas e muletas; faz empréstimo gratuito de equipamentos ortopédicos.'
   },
   {
     id: '6',
-    nome: 'Ponto Noroeste — Escola Estadual Cidadã',
-    endereco: 'Rua do Saber, 200 — Bairro Universitário',
-    diasHorarios: 'Segunda e quarta, 18h–21h',
-    recebeDistribui:
-      'Recebe material escolar e livros; distribui kits de estudo para jovens da comunidade.',
+    nome: 'Refúgio Verde — Horta Comunitária',
+    endereco: 'Travessa do Rio, s/n — Chácaras do Sol',
+    diasHorarios: 'Sábados, 6h–11h',
+    recebeDistribui: 'Recebe sementes, mudas e ferramentas agrícolas; distribui hortaliças frescas para moradores da região.'
   },
   {
     id: '7',
-    nome: 'Ponto Sudeste — Paróquia Cristo Redentor',
-    endereco: 'Praça da Fé, S/N — Jardim das Palmeiras',
-    diasHorarios: 'Domingo, 8h–13h',
-    recebeDistribui:
-      'Recebe doações financeiras e produtos de limpeza; distribui pão e café da manhã aos domingos.',
+    nome: 'Projeto Alfabetizar É Viver',
+    endereco: 'Rua Machado de Assis, 404 — Bairro Literário',
+    diasHorarios: 'Terça e quinta, 18h–22h',
+    recebeDistribui: 'Aceita cadernos novos, mochilas e lápis; oferece aulas de alfabetização para adultos com lanche incluso.'
   },
   {
     id: '8',
-    nome: 'Ponto Sudoeste — Galpão Solidário',
-    endereco: 'Rua dos Imigrantes, 400 — Setor Comercial',
-    diasHorarios: 'Quinta a sábado, 14h–20h',
-    recebeDistribui:
-      'Recebe brinquedos e roupas infantis; promove brechó solidário e distribui lanches para crianças.',
+    nome: 'Tenda da Sopa Fraterna',
+    endereco: 'Viaduto do Trabalhador — Zona Leste',
+    diasHorarios: 'Sexta-feira, 19h–23h',
+    recebeDistribui: 'Arrecada legumes, macarrão e copos térmicos; distribui sopa quente para a população em situação de rua.'
+  },
+  {
+    id: '9',
+    nome: 'Clube de Mães Estrela Guia',
+    endereco: 'Rua das Margaridas, 21 — Vila Operária',
+    diasHorarios: 'Segunda e sexta, 14h–18h',
+    recebeDistribui: 'Recebe lã, tecidos e fraldas geriátricas; distribui cobertores de retalhos para asilos parceiros.'
+  },
+  {
+    id: '10',
+    nome: 'Estação Digital Cidadã',
+    endereco: 'Avenida Tecnológica, 99 — Polo de Inovação',
+    diasHorarios: 'Quarta a sábado, 10h–16h',
+    recebeDistribui: 'Arrecada peças de computador e celulares antigos; conserta e doa eletrônicos para estudantes de escolas públicas.'
   }
 ];
 
@@ -103,11 +108,11 @@ function PontoItem({
 
 export default function TelaListaPontos({ navigation }: Props) {
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.titulo}>Pontos de coleta / distribuição</Text>
+    <View style={styles.container}>
       <FlatList
         data={pontosMock}
         keyExtractor={ item => item.id.toString()}
+        ListHeaderComponent={()=><Text style={styles.titulo}>Pontos de coleta / distribuição</Text>}
         renderItem={({item})=>
           <PontoItem
           ponto={item}
@@ -116,7 +121,7 @@ export default function TelaListaPontos({ navigation }: Props) {
         }
       />
 
-    </ScrollView>
+    </View>
   );
 }
 
