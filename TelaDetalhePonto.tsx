@@ -5,6 +5,7 @@ import { pontosMock, type Ponto } from './TelaListaPontos';
 type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
+  Cadastro: undefined;
 };
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Detalhe'>;

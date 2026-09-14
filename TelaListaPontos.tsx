@@ -85,6 +85,7 @@ export const pontosMock: Ponto[] = [
 type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
+  Cadastro: undefined;
 };
 
 type Props = {
@@ -112,7 +113,16 @@ export default function TelaListaPontos({ navigation }: Props) {
       <FlatList
         data={pontosMock}
         keyExtractor={ item => item.id.toString()}
-        ListHeaderComponent={()=><Text style={styles.titulo}>Pontos de coleta / distribuição</Text>}
+        ListHeaderComponent={()=>
+        <View style={styles.headerContainer}>
+          <Text style={styles.titulo}>Pontos de coleta / distribuição</Text>
+          <TouchableOpacity 
+              style={styles.botaoCadastro} 
+              onPress={() => navigation.navigate('Cadastro')}
+            >
+              <Text style={styles.textoBotaoCadastro}>+ Registrar Doação</Text>
+            </TouchableOpacity>
+          </View>}
         renderItem={({item})=>
           <PontoItem
           ponto={item}
@@ -152,5 +162,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     marginTop: 4,
+  },
+  headerContainer: {
+    marginBottom: 16,
+  },
+  botaoCadastro: {
+    backgroundColor: '#1B3A5C', // Mesma cor do título para manter o padrão
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  textoBotaoCadastro: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
