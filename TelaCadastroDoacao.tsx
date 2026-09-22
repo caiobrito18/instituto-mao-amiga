@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -7,6 +7,7 @@ import {
   TouchableOpacity, 
   Alert 
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function TelaCadastroDoacao() {
   const [tipoItem, setTipoItem] = useState('');
@@ -14,9 +15,29 @@ export default function TelaCadastroDoacao() {
   const [pontoDestino, setPontoDestino] = useState('');
   const [erroQuantidade, setErroQuantidade] = useState('');
 
-  const handleSalvar = () => {
-    // Critério de aceite: Validação do campo numérico (quantidade)
-    // Usamos uma expressão regular para garantir que só existam números
+  // Chave usada para salvar no AsyncStorage
+  const ASYNC_STORAGE_KEY = '@ultima_doacao';
+
+  // useEffect para carregar os dados salvos quando a tela for aberta
+  useEffect(() => {
+    const carregarDoacaoSalva = async () => {
+      try {
+        const dadosJSON = await AsyncStorage.getItem(ASYNC_STORAGE_KEY);
+        if (dadosJSON !== null) {
+          const doacaoSalva = JSON.parse(dadosJSON);
+          setTipoItem(doacaoSalva.tipoItem || '');
+          setQuantidade(doacaoSalva.quantidade || '');
+          setPontoDestino(doacaoSalva.pontoDestino || '');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar dados no AsyncStorage:', error);
+      }
+    };
+
+    carregarDoacaoSalva();
+  }, []); // Array vazio garante que rode apenas 1 vez ao montar a tela
+
+  const handleSalvar = async () => {
     const apenasNumeros = /^\d+$/.test(quantidade.trim());
 
     if (!quantidade.trim()) {
@@ -27,30 +48,37 @@ export default function TelaCadastroDoacao() {
       return;
     }
 
-    // Limpa o erro se passou na validação
     setErroQuantidade('');
 
-    // Validação extra simples para não deixar os outros campos vazios
     if (!tipoItem.trim() || !pontoDestino.trim()) {
       Alert.alert('Aviso', 'Por favor, preencha todos os campos.');
       return;
     }
 
-    // Fora de escopo para esta Issue: Salvar no banco de dados
-    // Vamos apenas exibir um alerta de sucesso
-    Alert.alert('Sucesso', 'Doação validada com sucesso! (Salvar será implementado na Aula 15)');
-    
-    // Limpa o formulário após "salvar"
-    setTipoItem('');
-    setQuantidade('');
-    setPontoDestino('');
+    // Criando o objeto da doação
+    const novaDoacao = {
+      tipoItem: tipoItem.trim(),
+      quantidade: quantidade.trim(),
+      pontoDestino: pontoDestino.trim(),
+    };
+
+    // Salvando os dados localmente
+    try {
+      await AsyncStorage.setItem(ASYNC_STORAGE_KEY, JSON.stringify(novaDoacao));
+      Alert.alert('Sucesso', 'Doação salva localmente com AsyncStorage!');
+      
+      // Opcional: Você pode limpar os campos aqui se quiser, mas mantê-los 
+      // ajuda a provar visualmente que estão sendo recuperados ao reabrir o app.
+    } catch (error) {
+      console.error('Erro ao salvar no AsyncStorage:', error);
+      Alert.alert('Erro', 'Não foi possível salvar os dados.');
+    }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Registrar Doação</Text>
 
-      {/* Campo: Tipo do Item */}
       <Text style={styles.rotulo}>Tipo do item</Text>
       <TextInput
         style={styles.input}
@@ -59,7 +87,6 @@ export default function TelaCadastroDoacao() {
         onChangeText={setTipoItem}
       />
 
-      {/* Campo: Quantidade */}
       <Text style={styles.rotulo}>Quantidade</Text>
       <TextInput
         style={[styles.input, erroQuantidade ? styles.inputErro : null]}
@@ -67,14 +94,12 @@ export default function TelaCadastroDoacao() {
         value={quantidade}
         onChangeText={(texto) => {
           setQuantidade(texto);
-          if (erroQuantidade) setErroQuantidade(''); // Limpa o erro enquanto o usuário digita
+          if (erroQuantidade) setErroQuantidade('');
         }}
-        keyboardType="numeric" // Facilita mostrando o teclado numérico
+        keyboardType="numeric"
       />
-      {/* Mensagem de erro condicional */}
       {erroQuantidade ? <Text style={styles.textoErro}>{erroQuantidade}</Text> : null}
 
-      {/* Campo: Ponto de Destino */}
       <Text style={styles.rotulo}>Ponto de destino</Text>
       <TextInput
         style={styles.input}
@@ -83,9 +108,8 @@ export default function TelaCadastroDoacao() {
         onChangeText={setPontoDestino}
       />
 
-      {/* Botão de Submissão */}
       <TouchableOpacity style={styles.botao} onPress={handleSalvar}>
-        <Text style={styles.textoBotao}>Registrar</Text>
+        <Text style={styles.textoBotao}>Salvar Localmente</Text>
       </TouchableOpacity>
     </View>
   );
@@ -120,13 +144,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   inputErro: {
-    borderColor: '#D32F2F', // Borda vermelha se houver erro
+    borderColor: '#D32F2F',
     backgroundColor: '#FFEBEE',
   },
   textoErro: {
     color: '#D32F2F',
     fontSize: 12,
-    marginTop: -12, // Sobe o texto um pouco para ficar perto do input
+    marginTop: -12,
     marginBottom: 16,
   },
   botao: {
