@@ -1,19 +1,23 @@
-// TelaCadastroDoacao.tsx
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
     Alert,
     StyleSheet,
-    Text,
-    TextInput,
+    Text, TextInput,
     TouchableOpacity,
     View
 } from 'react-native';
-import { salvarDoacao } from './doacoesStorage'; // Importando nosso serviço de storage
+import { RootStackParamList } from './App';
+import { atualizarDoacao, salvarDoacao } from './doacoesStorage';
 
-export default function TelaCadastroDoacao() {
-  const [tipoItem, setTipoItem] = useState('');
-  const [quantidade, setQuantidade] = useState('');
-  const [pontoDestino, setPontoDestino] = useState('');
+type Props = NativeStackScreenProps<RootStackParamList, 'Cadastro'>;
+
+export default function TelaCadastroDoacao({ route, navigation }: Props) {
+  const doacaoEdit = route.params?.doacaoParaEditar;
+
+  const [tipoItem, setTipoItem] = useState(doacaoEdit?.tipoItem || '');
+  const [quantidade, setQuantidade] = useState(doacaoEdit?.quantidade || '');
+  const [pontoDestino, setPontoDestino] = useState(doacaoEdit?.pontoDestino || '');
   const [erroQuantidade, setErroQuantidade] = useState('');
 
   const handleSalvar = async () => {
@@ -26,7 +30,6 @@ export default function TelaCadastroDoacao() {
       setErroQuantidade('A quantidade deve conter apenas números válidos.');
       return;
     }
-
     setErroQuantidade('');
 
     if (!tipoItem.trim() || !pontoDestino.trim()) {
@@ -34,22 +37,31 @@ export default function TelaCadastroDoacao() {
       return;
     }
 
-    // Criando o objeto da doação sem id e criadoEm (o storage fará isso)
-    const novaDoacao = {
-      tipoItem: tipoItem.trim(),
-      quantidade: quantidade.trim(),
-      pontoDestino: pontoDestino.trim(),
-    };
-
-    // Salvando usando o arquivo centralizado
     try {
-      await salvarDoacao(novaDoacao);
-      Alert.alert('Sucesso', 'Doação registrada e guardada no histórico!');
-      
-      // Limpar os campos para a próxima doação
-      setTipoItem('');
-      setQuantidade('');
-      setPontoDestino('');
+      if (doacaoEdit) {
+        const doacaoAtualizada = {
+          ...doacaoEdit, 
+          tipoItem: tipoItem.trim(),
+          quantidade: quantidade.trim(),
+          pontoDestino: pontoDestino.trim(),
+        };
+        
+        await atualizarDoacao(doacaoAtualizada);
+        Alert.alert('Sucesso', 'Doação atualizada com sucesso!');
+        navigation.goBack(); 
+      } else {
+        const novaDoacao = {
+          tipoItem: tipoItem.trim(),
+          quantidade: quantidade.trim(),
+          pontoDestino: pontoDestino.trim(),
+        };
+        await salvarDoacao(novaDoacao);
+        Alert.alert('Sucesso', 'Doação registrada e guardada no histórico!');
+        
+        setTipoItem('');
+        setQuantidade('');
+        setPontoDestino('');
+      }
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível salvar os dados.');
     }
@@ -57,7 +69,9 @@ export default function TelaCadastroDoacao() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Registrar Doação</Text>
+      <Text style={styles.titulo}>
+        {doacaoEdit ? 'Editar Registro' : 'Registrar Doação'}
+      </Text>
 
       <Text style={styles.rotulo}>Tipo do item</Text>
       <TextInput
@@ -89,7 +103,9 @@ export default function TelaCadastroDoacao() {
       />
 
       <TouchableOpacity style={styles.botao} onPress={handleSalvar}>
-        <Text style={styles.textoBotao}>Salvar Doação</Text>
+        <Text style={styles.textoBotao}>
+          {doacaoEdit ? 'Salvar Alterações' : 'Salvar Doação'}
+        </Text>
       </TouchableOpacity>
     </View>
   );

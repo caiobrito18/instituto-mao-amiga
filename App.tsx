@@ -10,7 +10,7 @@ import { Doacao } from './doacoesStorage';
 export type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
-  Cadastro: undefined;
+  Cadastro: { doacaoParaEditar?: Doacao } | undefined;
   Historico: undefined;
   DetalheDoacao: { doacao: Doacao };
 };
@@ -45,6 +45,14 @@ export default function App() {
           name="DetalheDoacao" 
           component={TelaDetalheDoacao} 
           options={{ title: 'Registro da Doação' }} 
+        />
+        <Stack.Screen 
+          name="Cadastro" 
+          component={TelaCadastroDoacao} 
+          // options agora é uma função que checa se o parâmetro existe para definir o título
+          options={({ route }) => ({ 
+            title: route.params?.doacaoParaEditar ? 'Editar Doação' : 'Nova Doação' 
+          })} 
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -61,4 +61,19 @@ export const excluirDoacao = async (id: string): Promise<void> => {
     console.error('Erro ao excluir doação no SecureStore:', error);
     throw error;
   }
+}
+
+export const atualizarDoacao = async (doacaoAtualizada: Doacao): Promise<void> => {
+  try {
+    const doacoesAntigas = await listarDoacoes();
+    
+    const novasDoacoes = doacoesAntigas.map(doacao => 
+      doacao.id === doacaoAtualizada.id ? doacaoAtualizada : doacao
+    );
+
+    await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(novasDoacoes));
+  } catch (error) {
+    console.error('Erro ao atualizar doação no SecureStore:', error);
+    throw error;
+  }
 };
