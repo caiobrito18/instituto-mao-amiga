@@ -48,3 +48,17 @@ export const salvarDoacao = async (novaDoacao: Doacao): Promise<void> => {
     throw error;
   }
 };
+
+export const excluirDoacao = async (id: string): Promise<void> => {
+  try {
+    const doacoesAntigas = await listarDoacoes();
+    // Filtra removendo a doação que tem o ID passado
+    const novasDoacoes = doacoesAntigas.filter(doacao => doacao.id !== id);
+    
+    // Salva a nova lista atualizada
+    await SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(novasDoacoes));
+  } catch (error) {
+    console.error('Erro ao excluir doação no SecureStore:', error);
+    throw error;
+  }
+};

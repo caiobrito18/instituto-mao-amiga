@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   botaoCadastro: {
-    backgroundColor: '#1B3A5C', // Mesma cor do título para manter o padrão
+    backgroundColor: '#1B3A5C',
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -191,10 +191,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
-    gap: 12, // Dá um espaço entre os botões no iOS/Android modernos
+    gap: 12, 
   },
   botaoAcao: {
-    flex: 1, // Faz os botões dividirem o espaço igualmente
+    flex: 1,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -211,6 +211,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   textoBotaoHistorico: {
-    color: '#1B3A5C', // O texto do histórico fica azul para contrastar com fundo branco
+    color: '#1B3A5C', 
   }
 });

@@ -1,4 +1,3 @@
-// TelaHistoricoDoacoes.tsx
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
@@ -8,22 +7,20 @@ import { listarDoacoes, type Doacao } from './doacoesStorage';
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Historico'>;
 
-// Componente de item separado e otimizado com React.memo
-const DoacaoItem = React.memo(({ doacao }: { doacao: Doacao }) => {
-  // Formatar a data para o padrão brasileiro
+const DoacaoItem = React.memo(({ doacao, onPress }: { doacao: Doacao, onPress: () => void }) => {
   const dataFormatada = doacao.criadoEm 
     ? new Date(doacao.criadoEm).toLocaleDateString('pt-BR') 
     : 'Data desconhecida';
 
   return (
-    <View style={styles.itemContainer}>
+    <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
       <View style={styles.linhaCabecalho}>
         <Text style={styles.itemTitle}>{doacao.tipoItem}</Text>
         <Text style={styles.itemQuantidade}>Qtd: {doacao.quantidade}</Text>
       </View>
       <Text style={styles.itemText}>Destino: {doacao.pontoDestino}</Text>
       <Text style={styles.itemDate}>Registrado em: {dataFormatada}</Text>
-    </View>
+    </TouchableOpacity>
   );
 });
 
@@ -31,12 +28,10 @@ export default function TelaHistoricoDoacoes() {
   const [doacoes, setDoacoes] = useState<Doacao[]>([]);
   const navigation = useNavigation<NavigationProp>();
 
-  // useFocusEffect garante que a lista será atualizada ao voltar da tela de Cadastro
   useFocusEffect(
     useCallback(() => {
       const carregarDoacoes = async () => {
         const dados = await listarDoacoes();
-        // Ordena para exibir as doações mais recentes no topo
         const dadosOrdenados = dados.sort((a, b) => {
           return new Date(b.criadoEm || 0).getTime() - new Date(a.criadoEm || 0).getTime();
         });
@@ -47,7 +42,6 @@ export default function TelaHistoricoDoacoes() {
     }, [])
   );
 
-  // Componente exibido quando a lista está vazia
   const renderEmptyComponent = () => (
     <View style={styles.emptyContainer}>
       <Text style={styles.emptyText}>Você ainda não registrou nenhuma doação.</Text>
@@ -61,11 +55,16 @@ export default function TelaHistoricoDoacoes() {
   );
 
   return (
-    <View style={styles.container}>
+<View style={styles.container}>
       <FlatList
         data={doacoes}
         keyExtractor={(item) => item.id!}
-        renderItem={({ item }) => <DoacaoItem doacao={item} />}
+        renderItem={({ item }) => (
+          <DoacaoItem 
+            doacao={item} 
+            onPress={() => navigation.navigate('DetalheDoacao', { doacao: item })} 
+          />
+        )}
         contentContainerStyle={doacoes.length === 0 ? styles.listEmpty : styles.listContent}
         ListEmptyComponent={renderEmptyComponent}
       />

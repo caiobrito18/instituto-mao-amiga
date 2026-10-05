@@ -1,16 +1,18 @@
-// App.tsx
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TelaCadastroDoacao from './TelaCadastroDoacao';
+import TelaDetalheDoacao from './TelaDetalheDoacao';
 import TelaDetalhePonto from './TelaDetalhePonto';
-import TelaHistoricoDoacoes from './TelaHistoricoDoacoes'; // <-- IMPORTANTE
+import TelaHistoricoDoacoes from './TelaHistoricoDoacoes';
 import TelaListaPontos from './TelaListaPontos';
+import { Doacao } from './doacoesStorage';
 
 export type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
   Cadastro: undefined;
-  Historico: undefined; // <-- NOVA ROTA
+  Historico: undefined;
+  DetalheDoacao: { doacao: Doacao };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,7 +39,12 @@ export default function App() {
         <Stack.Screen 
           name="Historico" 
           component={TelaHistoricoDoacoes} 
-          options={{ title: 'Minhas Doações' }} // <-- NOVA TELA
+          options={{ title: 'Minhas Doações' }} 
+        />
+        <Stack.Screen 
+          name="DetalheDoacao" 
+          component={TelaDetalheDoacao} 
+          options={{ title: 'Registro da Doação' }} 
         />
       </Stack.Navigator>
     </NavigationContainer>
