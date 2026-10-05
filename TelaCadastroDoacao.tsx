@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// TelaCadastroDoacao.tsx
+import React, { useState } from 'react';
 import { 
   View, 
   Text, 
@@ -7,35 +8,13 @@ import {
   TouchableOpacity, 
   Alert 
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { salvarDoacao } from './doacoesStorage'; // Importando nosso serviço de storage
 
 export default function TelaCadastroDoacao() {
   const [tipoItem, setTipoItem] = useState('');
   const [quantidade, setQuantidade] = useState('');
   const [pontoDestino, setPontoDestino] = useState('');
   const [erroQuantidade, setErroQuantidade] = useState('');
-
-  // Chave usada para salvar no AsyncStorage
-  const ASYNC_STORAGE_KEY = '@ultima_doacao';
-
-  // useEffect para carregar os dados salvos quando a tela for aberta
-  useEffect(() => {
-    const carregarDoacaoSalva = async () => {
-      try {
-        const dadosJSON = await AsyncStorage.getItem(ASYNC_STORAGE_KEY);
-        if (dadosJSON !== null) {
-          const doacaoSalva = JSON.parse(dadosJSON);
-          setTipoItem(doacaoSalva.tipoItem || '');
-          setQuantidade(doacaoSalva.quantidade || '');
-          setPontoDestino(doacaoSalva.pontoDestino || '');
-        }
-      } catch (error) {
-        console.error('Erro ao buscar dados no AsyncStorage:', error);
-      }
-    };
-
-    carregarDoacaoSalva();
-  }, []); // Array vazio garante que rode apenas 1 vez ao montar a tela
 
   const handleSalvar = async () => {
     const apenasNumeros = /^\d+$/.test(quantidade.trim());
@@ -55,22 +34,23 @@ export default function TelaCadastroDoacao() {
       return;
     }
 
-    // Criando o objeto da doação
+    // Criando o objeto da doação sem id e criadoEm (o storage fará isso)
     const novaDoacao = {
       tipoItem: tipoItem.trim(),
       quantidade: quantidade.trim(),
       pontoDestino: pontoDestino.trim(),
     };
 
-    // Salvando os dados localmente
+    // Salvando usando o arquivo centralizado
     try {
-      await AsyncStorage.setItem(ASYNC_STORAGE_KEY, JSON.stringify(novaDoacao));
-      Alert.alert('Sucesso', 'Doação salva localmente com AsyncStorage!');
+      await salvarDoacao(novaDoacao);
+      Alert.alert('Sucesso', 'Doação registrada e guardada no histórico!');
       
-      // Opcional: Você pode limpar os campos aqui se quiser, mas mantê-los 
-      // ajuda a provar visualmente que estão sendo recuperados ao reabrir o app.
+      // Limpar os campos para a próxima doação
+      setTipoItem('');
+      setQuantidade('');
+      setPontoDestino('');
     } catch (error) {
-      console.error('Erro ao salvar no AsyncStorage:', error);
       Alert.alert('Erro', 'Não foi possível salvar os dados.');
     }
   };
@@ -109,60 +89,23 @@ export default function TelaCadastroDoacao() {
       />
 
       <TouchableOpacity style={styles.botao} onPress={handleSalvar}>
-        <Text style={styles.textoBotao}>Salvar Localmente</Text>
+        <Text style={styles.textoBotao}>Salvar Doação</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-  },
-  titulo: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: '#1B3A5C',
-    marginBottom: 24,
-  },
-  rotulo: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666666',
-    marginBottom: 8,
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#FFFFFF' },
+  titulo: { fontSize: 24, fontWeight: '600', color: '#1B3A5C', marginBottom: 24 },
+  rotulo: { fontSize: 14, fontWeight: '600', color: '#666666', marginBottom: 8 },
   input: {
-    borderWidth: 1,
-    borderColor: '#E0E0E0',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: '#333333',
-    marginBottom: 16,
-    backgroundColor: '#F9F9F9',
+    borderWidth: 1, borderColor: '#E0E0E0', borderRadius: 8,
+    padding: 12, fontSize: 16, color: '#333333', marginBottom: 16,
+    backgroundColor: '#F9F9F9'
   },
-  inputErro: {
-    borderColor: '#D32F2F',
-    backgroundColor: '#FFEBEE',
-  },
-  textoErro: {
-    color: '#D32F2F',
-    fontSize: 12,
-    marginTop: -12,
-    marginBottom: 16,
-  },
-  botao: {
-    backgroundColor: '#1B3A5C',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  textoBotao: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  inputErro: { borderColor: '#D32F2F', backgroundColor: '#FFEBEE' },
+  textoErro: { color: '#D32F2F', fontSize: 12, marginTop: -12, marginBottom: 16 },
+  botao: { backgroundColor: '#1B3A5C', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 8 },
+  textoBotao: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
 });
