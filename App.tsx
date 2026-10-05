@@ -1,13 +1,16 @@
+// App.tsx
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import TelaListaPontos from './TelaListaPontos';
-import TelaDetalhePonto from './TelaDetalhePonto';
 import TelaCadastroDoacao from './TelaCadastroDoacao';
+import TelaDetalhePonto from './TelaDetalhePonto';
+import TelaHistoricoDoacoes from './TelaHistoricoDoacoes'; // <-- IMPORTANTE
+import TelaListaPontos from './TelaListaPontos';
 
 export type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
   Cadastro: undefined;
+  Historico: undefined; // <-- NOVA ROTA
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -26,7 +29,16 @@ export default function App() {
           component={TelaDetalhePonto}
           options={{ title: 'Detalhe do ponto' }}
         />
-        <Stack.Screen name="Cadastro" component={TelaCadastroDoacao} options={{ title: 'Nova Doação' }} />
+        <Stack.Screen 
+          name="Cadastro" 
+          component={TelaCadastroDoacao} 
+          options={{ title: 'Nova Doação' }} 
+        />
+        <Stack.Screen 
+          name="Historico" 
+          component={TelaHistoricoDoacoes} 
+          options={{ title: 'Minhas Doações' }} // <-- NOVA TELA
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
