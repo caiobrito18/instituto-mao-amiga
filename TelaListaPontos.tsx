@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList } from 'react-native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export type Ponto = {
   id: string;
@@ -86,6 +86,7 @@ type RootStackParamList = {
   Lista: undefined;
   Detalhe: { pontoId: string };
   Cadastro: undefined;
+  Historico: undefined;
 };
 
 type Props = {
@@ -106,7 +107,6 @@ function PontoItem({
     </TouchableOpacity>
   );
 }
-
 export default function TelaListaPontos({ navigation }: Props) {
   return (
     <View style={styles.container}>
@@ -116,13 +116,23 @@ export default function TelaListaPontos({ navigation }: Props) {
         ListHeaderComponent={()=>
         <View style={styles.headerContainer}>
           <Text style={styles.titulo}>Pontos de coleta / distribuição</Text>
-          <TouchableOpacity 
-              style={styles.botaoCadastro} 
-              onPress={() => navigation.navigate('Cadastro')}
-            >
-              <Text style={styles.textoBotaoCadastro}>+ Registrar Doação</Text>
+          
+          <View style={styles.botoesAcaoContainer}>
+            <TouchableOpacity 
+                style={[styles.botaoAcao, styles.botaoCadastro]} 
+                onPress={() => navigation.navigate('Cadastro')}
+              >
+                <Text style={styles.textoBotaoAcao}>+ Registrar Doação</Text>
             </TouchableOpacity>
-          </View>}
+
+            <TouchableOpacity 
+                style={[styles.botaoAcao, styles.botaoHistorico]} 
+                onPress={() => navigation.navigate('Historico')}
+              >
+                <Text style={[styles.textoBotaoAcao, styles.textoBotaoHistorico]}>Ver Histórico</Text>
+            </TouchableOpacity>
+          </View>
+        </View>}
         renderItem={({item})=>
           <PontoItem
           ponto={item}
@@ -130,7 +140,6 @@ export default function TelaListaPontos({ navigation }: Props) {
           />
         }
       />
-
     </View>
   );
 }
@@ -143,7 +152,7 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 24,
-    fontWeight: 600,
+    fontWeight: '600',
     color: '#1B3A5C',
     marginBottom: 16,
   },
@@ -178,4 +187,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  botoesAcaoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    gap: 12, // Dá um espaço entre os botões no iOS/Android modernos
+  },
+  botaoAcao: {
+    flex: 1, // Faz os botões dividirem o espaço igualmente
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  botaoHistorico: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#1B3A5C',
+  },
+  textoBotaoAcao: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+  },
+  textoBotaoHistorico: {
+    color: '#1B3A5C', // O texto do histórico fica azul para contrastar com fundo branco
+  }
 });

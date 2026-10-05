@@ -1,12 +1,12 @@
 // TelaCadastroDoacao.tsx
-import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Alert 
+import { useState } from 'react';
+import {
+    Alert,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
 import { salvarDoacao } from './doacoesStorage'; // Importando nosso serviço de storage
 
