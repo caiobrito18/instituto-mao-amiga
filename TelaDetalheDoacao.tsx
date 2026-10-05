@@ -1,14 +1,27 @@
+import { useFocusEffect } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCallback, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RootStackParamList } from './App';
-import { excluirDoacao } from './doacoesStorage';
+import { excluirDoacao, listarDoacoes } from './doacoesStorage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetalheDoacao'>;
 
 export default function TelaDetalheDoacao({ route, navigation }: Props) {
-  const { doacao } = route.params;
+  const [doacao, setDoacao] = useState(route.params.doacao);
 
-  // Formata a data de forma mais legível, incluindo horário
+  useFocusEffect(
+    useCallback(() => {
+      const recarregarDoacao = async () => {
+        const lista = await listarDoacoes();
+        const atualizada = lista.find(d => d.id === doacao.id);
+        if (atualizada) {
+          setDoacao(atualizada);
+        }
+      };
+      recarregarDoacao();
+    }, [doacao.id])
+  );
   const dataFormatada = doacao.criadoEm
     ? new Date(doacao.criadoEm).toLocaleString('pt-BR', {
         day: '2-digit',
@@ -47,7 +60,7 @@ export default function TelaDetalheDoacao({ route, navigation }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+<View style={styles.container}>
       <View style={styles.card}>
         <Text style={styles.rotulo}>Tipo de Item</Text>
         <Text style={styles.texto}>{doacao.tipoItem}</Text>
@@ -62,9 +75,18 @@ export default function TelaDetalheDoacao({ route, navigation }: Props) {
         <Text style={styles.texto}>{dataFormatada}</Text>
       </View>
 
-      <TouchableOpacity style={styles.botaoExcluir} onPress={handleExcluir}>
-        <Text style={styles.textoBotaoExcluir}>Excluir Registro</Text>
-      </TouchableOpacity>
+      <View style={styles.botoesContainer}>
+        <TouchableOpacity 
+          style={styles.botaoEditar} 
+          onPress={() => navigation.navigate('Cadastro', { doacaoParaEditar: doacao })}
+        >
+          <Text style={styles.textoBotaoEditar}>Editar Registro</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.botaoExcluir} onPress={handleExcluir}>
+          <Text style={styles.textoBotaoExcluir}>Excluir Registro</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -74,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'space-between', // Joga o card pra cima e o botão pra baixo
+    justifyContent: 'space-between', 
   },
   card: {
     backgroundColor: '#F9F9F9',
@@ -107,6 +129,21 @@ const styles = StyleSheet.create({
   },
   textoBotaoExcluir: {
     color: '#D32F2F',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  botoesContainer: {
+    gap: 12, // Dá um espaço uniforme entre os botões
+    marginBottom: 20,
+  },
+  botaoEditar: {
+    backgroundColor: '#1B3A5C', // Azul principal para ação primária
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  textoBotaoEditar: {
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
