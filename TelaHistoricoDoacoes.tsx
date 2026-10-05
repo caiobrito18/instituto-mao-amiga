@@ -1,7 +1,16 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+    FlatList,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import { RootStackParamList } from './App';
 import { listarDoacoes, type Doacao } from './doacoesStorage';
 
@@ -26,6 +35,7 @@ const DoacaoItem = React.memo(({ doacao, onPress }: { doacao: Doacao, onPress: (
 
 export default function TelaHistoricoDoacoes() {
   const [doacoes, setDoacoes] = useState<Doacao[]>([]);
+  const [busca, setBusca] = useState('');
   const navigation = useNavigation<NavigationProp>();
 
   useFocusEffect(
@@ -42,22 +52,53 @@ export default function TelaHistoricoDoacoes() {
     }, [])
   );
 
-  const renderEmptyComponent = () => (
-    <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>Você ainda não registrou nenhuma doação.</Text>
-      <TouchableOpacity 
-        style={styles.botaoCadastro} 
-        onPress={() => navigation.navigate('Cadastro')}
-      >
-        <Text style={styles.textoBotaoCadastro}>Fazer minha primeira doação</Text>
-      </TouchableOpacity>
-    </View>
+  const doacoesFiltradas = doacoes.filter((doacao) =>
+    doacao.tipoItem.toLowerCase().includes(busca.toLowerCase())
   );
 
+  const renderEmptyComponent = () => {
+    if (doacoes.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>Você ainda não registrou nenhuma doação.</Text>
+          <TouchableOpacity 
+            style={styles.botaoCadastro} 
+            onPress={() => navigation.navigate('Cadastro')}
+          >
+            <Text style={styles.textoBotaoCadastro}>Fazer minha primeira doação</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>
+          Nenhuma doação encontrada para "{busca}".
+        </Text>
+      </View>
+    );
+  };
+
   return (
-<View style={styles.container}>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      {doacoes.length > 0 && (
+        <View style={styles.buscaContainer}>
+          <TextInput
+            style={styles.inputBusca}
+            placeholder="Buscar pelo tipo de item..."
+            value={busca}
+            onChangeText={setBusca}
+            clearButtonMode="while-editing"
+          />
+        </View>
+      )}
+
       <FlatList
-        data={doacoes}
+        data={doacoesFiltradas} 
         keyExtractor={(item) => item.id!}
         renderItem={({ item }) => (
           <DoacaoItem 
@@ -65,10 +106,11 @@ export default function TelaHistoricoDoacoes() {
             onPress={() => navigation.navigate('DetalheDoacao', { doacao: item })} 
           />
         )}
-        contentContainerStyle={doacoes.length === 0 ? styles.listEmpty : styles.listContent}
+        contentContainerStyle={doacoesFiltradas.length === 0 ? styles.listEmpty : styles.listContent}
         ListEmptyComponent={renderEmptyComponent}
+        keyboardShouldPersistTaps="handled" 
       />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -76,6 +118,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  buscaContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEEEEE',
+  },
+  inputBusca: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    color: '#333333',
   },
   listContent: {
     padding: 20,
