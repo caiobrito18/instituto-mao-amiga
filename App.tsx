@@ -32,11 +32,6 @@ export default function App() {
           options={{ title: 'Detalhe do ponto' }}
         />
         <Stack.Screen 
-          name="Cadastro" 
-          component={TelaCadastroDoacao} 
-          options={{ title: 'Nova Doação' }} 
-        />
-        <Stack.Screen 
           name="Historico" 
           component={TelaHistoricoDoacoes} 
           options={{ title: 'Minhas Doações' }} 
@@ -49,7 +44,6 @@ export default function App() {
         <Stack.Screen 
           name="Cadastro" 
           component={TelaCadastroDoacao} 
-          // options agora é uma função que checa se o parâmetro existe para definir o título
           options={({ route }) => ({ 
             title: route.params?.doacaoParaEditar ? 'Editar Doação' : 'Nova Doação' 
           })} 
