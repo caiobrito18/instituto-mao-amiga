@@ -89,3 +89,29 @@ npx expo start
 4. **Correção de erros:** Editar a doação feita, alterar o valor para 25, salvar e mostrar que o resumo no histórico atualizou instantaneamente (código limpo e reaproveitado).
 5. **Controle e Limpeza:** Excluir o registro, demonstrando o alerta nativo de confirmação.
 6. **Confiabilidade:** Fechar o app no celular, abrir novamente e provar que os dados persistem graças ao armazenamento local.
+# Instituto Mão Amiga - Projeto N2
+
+## API
+
+Requer Java 17. Execute em `api/` com `./mvnw spring-boot:run`. A documentação fica em
+`http://localhost:8080/swagger-ui.html`. O banco H2 é persistido em `api/data/maoamiga`.
+
+## App
+
+Instale as dependências com `npm install` e inicie com `npx expo start`.
+Antes de abrir o app, altere `BASE_URL` em
+`services/api.ts` para o IP da máquina que executa a API (por exemplo,
+`http://192.168.1.100:8080/api/v1`). Não use `localhost` em um aparelho físico.
+
+## Arquitetura
+
+Pontos e doações ficam centralizados na API para compartilhar dados, validar regras
+e manter consistência. Favoritos são uma preferência pessoal de interface e, por
+isso, ficam persistidos localmente no aparelho com AsyncStorage.
+
+## Roteiro de demonstração (até 3 minutos)
+
+1. Buscar um ponto e abrir seus detalhes.
+2. Cadastrar, editar, excluir e favoritar um ponto; abrir “Meus pontos”.
+3. Cadastrar, editar e excluir uma doação no histórico.
+4. No Swagger, demonstrar respostas 400 com dados inválidos e 404 com UUID inexistente.
