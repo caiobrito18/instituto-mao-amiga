@@ -1,65 +1,13 @@
-import { View, Text, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { pontosMock, type Ponto } from './TelaListaPontos';
-
-type RootStackParamList = {
-  Lista: undefined;
-  Detalhe: { pontoId: string };
-  Cadastro: undefined;
-};
-
+import { useEffect, useState } from 'react';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { RootStackParamList } from './App';
+import { excluir, buscarPorId, type Ponto } from './services/pontosService';
 type Props = NativeStackScreenProps<RootStackParamList, 'Detalhe'>;
-
-function DetalhePonto({ ponto }: { ponto: Ponto }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.nome}>{ponto.nome}</Text>
-      <Text style={styles.rotulo}>Endereço</Text>
-      <Text style={styles.texto}>{ponto.endereco}</Text>
-      <Text style={styles.rotulo}>Dias e horários</Text>
-      <Text style={styles.texto}>{ponto.diasHorarios}</Text>
-      <Text style={styles.rotulo}>Recebe / distribui</Text>
-      <Text style={styles.texto}>{ponto.recebeDistribui}</Text>
-    </View>
-  );
+export default function TelaDetalhePonto({ route, navigation }: Props) {
+  const [ponto, setPonto] = useState<Ponto>(); const [erro, setErro] = useState('');
+  useEffect(() => { buscarPorId(route.params.pontoId).then(setPonto).catch((error: Error & { status?: number }) => setErro(error.status === 404 ? 'Ponto não encontrado' : 'Não foi possível carregar o ponto.')); }, [route.params.pontoId]);
+  if (erro) return <View style={styles.container}><Text>{erro}</Text></View>; if (!ponto) return <View style={styles.container}><Text>Carregando...</Text></View>;
+  return <View style={styles.container}><Text style={styles.title}>{ponto.nome}</Text><Text>{ponto.endereco}</Text><Text>{ponto.bairro}</Text><Text>{ponto.horario}</Text><Text>{ponto.tipo}</Text><TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroPonto', { ponto })}><Text style={styles.buttonText}>Editar</Text></TouchableOpacity><TouchableOpacity style={styles.delete} onPress={() => Alert.alert('Excluir ponto', 'Deseja excluir este ponto?', [{ text: 'Cancelar' }, { text: 'Excluir', style: 'destructive', onPress: async () => { try { await excluir(ponto.id); navigation.goBack(); } catch { Alert.alert('Erro', 'Não foi possível excluir o ponto.'); } } }])}><Text>Excluir</Text></TouchableOpacity></View>;
 }
-
-export default function TelaDetalhePonto({ route }: Props) {
-  const { pontoId } = route.params;
-  const ponto = pontosMock.find((p) => p.id === pontoId);
-
-  if (!ponto) {
-    return (
-      <View style={styles.container}>
-        <Text>Ponto não encontrado.</Text>
-      </View>
-    );
-  }
-
-  return <DetalhePonto ponto={ponto} />;
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#FFFFFF',
-  },
-  nome: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1B3A5C',
-    marginBottom: 16,
-  },
-  rotulo: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#666666',
-    marginTop: 12,
-  },
-  texto: {
-    fontSize: 16,
-    color: '#333333',
-    marginTop: 4,
-  },
-});
+const styles = StyleSheet.create({ container: { flex: 1, padding: 20, gap: 12 }, title: { fontSize: 24, fontWeight: 'bold', color: '#1B3A5C' }, button: { backgroundColor: '#1B3A5C', padding: 15, alignItems: 'center', borderRadius: 8 }, buttonText: { color: '#fff', fontWeight: 'bold' }, delete: { padding: 15, alignItems: 'center', borderColor: '#b00020', borderWidth: 1, borderRadius: 8 } });

@@ -1,0 +1,10 @@
+import { del, get, post, put } from './api';
+export type Ponto = { id: string; nome: string; endereco: string; bairro: string; horario: string; tipo: 'coleta' | 'distribuição' };
+export type Page<T> = { content: T[]; page: { number: number; totalPages: number; last: boolean } };
+const query = (filtro = '', page = 0, size = 10) => `?filtro=${encodeURIComponent(filtro)}&page=${page}&size=${size}`;
+export const listar = () => get<Ponto[]>('/pontos');
+export const buscarPagina = (filtro = '', page = 0) => get<Page<Ponto>>(`/pontos/filtro${query(filtro, page)}`);
+export const buscarPorId = (id: string) => get<Ponto>(`/pontos/${id}`);
+export const cadastrar = (ponto: Omit<Ponto, 'id'>) => post<Ponto>('/pontos', ponto);
+export const editar = (id: string, ponto: Omit<Ponto, 'id'>) => put<Ponto>(`/pontos/${id}`, ponto);
+export const excluir = (id: string) => del<void>(`/pontos/${id}`);
