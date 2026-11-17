@@ -22,3 +22,11 @@ Endpoints de doações:
 - `POST`, `PUT /api/v1/doacoes/{id}` e `DELETE /api/v1/doacoes/{id}`
 
 Prints Swagger (sucesso 200/201), 400 e 404: _reservados para a apresentação._
+
+Exemplo de cadastro de doação:
+
+```json
+{"tipoItem":"alimentos","quantidade":10,"pontoDestino":"Ponto Mão Amiga 1"}
+```
+
+O campo `criadoEm` é gerado pelo servidor e permanece imutável nas edições.
